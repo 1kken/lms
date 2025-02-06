@@ -15,6 +15,7 @@ class studentFactory extends Factory
     {
         $gender=['male','female'];
         return [
+            'student_id'=> $this->faker->uuid(),
             'name' => $this->faker->name,
             'age' => random_int(18,80),
             'gender' => $gender[random_int(0,1)],

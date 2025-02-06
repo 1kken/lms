@@ -2,12 +2,33 @@
 @section('content')
     <div id="admin-content">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
+            <div class="row align-items-center mb-3">
+                <!-- Heading -->
+                <div class="col-md-4 mb-2 mb-md-0">
                     <h2 class="admin-heading">All Students</h2>
                 </div>
-                <div class="offset-md-6 col-md-2">
-                    <a class="add-new" href="{{ route('student.create') }}">Add Student</a>
+
+                <!-- Search Form -->
+                <div class="col-md-6">
+                    <form action="{{ route('student.search') }}" method="get">
+                        <div class="input-group">
+                            <!-- Search Input -->
+                            <input type="text" class="form-control @error('search') is-invalid @enderror"
+                                   placeholder="Search..." name="search" value="{{ request('search') }}">
+
+                            <!-- Search Button -->
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <x-css-search />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Add Student Button -->
+                <div class="col-md-2 text-md-right text-center mt-2 mt-md-0">
+                    <a class="btn btn-success" href="{{ route('student.create') }}">Add Student</a>
                 </div>
             </div>
             <div class="row">
@@ -18,24 +39,21 @@
                             <th>S.No</th>
                             <th>Student Name</th>
                             <th>Gender</th>
+                            <th>Class</th>
                             <th>Phone</th>
                             <th>Email</th>
-                            <th>View</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </thead>
                         <tbody>
                             @forelse ($students as $student)
                                 <tr>
-                                    <td class="id">{{ $student->id }}</td>
+                                    <td class="id">{{ $student->student_id }}</td>
                                     <td>{{ $student->name }}</td>
                                     <td class="text-capitalize">{{ $student->gender }}</td>
+                                    <td class="text-capitalize">{{$student->class}}</td>
                                     <td>{{ $student->phone }}</td>
                                     <td>{{ $student->email }}</td>
-                                    <td class="view">
-                                        <button data-sid='{{ $student->id }}>'
-                                            class="btn btn-primary view-btn">View</button>
-                                    </td>
                                     <td class="edit">
                                         <a href="{{ route('student.edit', $student) }}>" class="btn btn-success">Edit</a>
                                     </td>

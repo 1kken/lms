@@ -3,10 +3,33 @@
     <div id="admin-content">
         <div class="container">
             <div class="row">
+                <!-- Heading -->
                 <div class="col-md-3">
                     <h2 class="admin-heading">All Book Issue</h2>
                 </div>
-                <div class="offset-md-6 col-md-3">
+                <div class="col-md-6">
+                    <form action="{{ route('book_issue.search') }}" method="get">
+                        <div class="input-group">
+                            <!-- Search Input -->
+                            <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                   placeholder="Search..." name="search" value="{{  request('search') }}">
+                            <!-- Dropdown for Status -->
+                            <select name="status" class="form-control ml-2" >
+                                <option value="">All</option>
+                                <option value="Y" {{request('status') == 'Y' ? 'selected' : '' }}>Returned</option>
+                                <option value="N" {{ request('status') == 'N' ? 'selected' : '' }}>Issued</option>
+                            </select>
+
+                            <!-- Search Button -->
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <x-css-search />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class=" col-md-3">
                     <a class="add-new" href="{{ route('book_issue.create') }}">Add Book Issue</a>
                 </div>
             </div>
@@ -14,7 +37,7 @@
                 <div class="col-md-12">
                     <table class="content-table">
                         <thead>
-                            <th>S.No</th>
+                            <th>BI.No</th>
                             <th>Student Name</th>
                             <th>Book Name</th>
                             <th>Phone</th>

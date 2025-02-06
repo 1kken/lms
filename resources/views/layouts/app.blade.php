@@ -62,21 +62,10 @@
 
     @yield('content')
 
-    <!-- FOOTER -->
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <span>© Copyright {{ now()->format("Y") }} <a href="https://www.yahoobaba.net">YahooBaba 😎</a></span>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- /FOOTER -->
     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
-
 </html>

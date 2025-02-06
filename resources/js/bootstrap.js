@@ -6,9 +6,12 @@ window._ = require('lodash');
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
+// To use Html5QrcodeScanner (more info below)
 window.axios = require('axios');
-
+window.quagga = require('quagga').default;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

@@ -24,8 +24,8 @@ class Storebook_issueRequest extends FormRequest
     public function rules()
     {
         return [
-            'student_id' => "required",
-            'book_id' => "required",
+            'student_id' => "required|exists:students,student_id",
+            'rfid' => "required|exists:books,rfid",
         ];
     }
 }

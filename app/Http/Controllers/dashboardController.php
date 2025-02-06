@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\changePasswordRequest;
 use App\Models\auther;
 use App\Models\book;
-use App\Models\book_issue;
+use App\Models\BookIssue;
 use App\Models\category;
 use App\Models\publisher;
 use App\Models\student;
@@ -22,7 +22,7 @@ class dashboardController extends Controller
             'categories' => category::count(),
             'books' => book::count(),
             'students' => student::count(),
-            'issued_books' => book_issue::count(),
+            'issued_books' => BookIssue::count(),
         ]);
     }
 

@@ -31,7 +31,6 @@
                     </form>
                 </div>
 
-
                 <!-- Add Book Button -->
                 <div class="col-md-3 text-right">
                     <a class="btn btn-success" href="{{ route('book.create') }}">Add Book</a>
@@ -81,7 +80,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8">No Books Found</td>
+                                    <td colspan="9">No Books Found</td>
                                 </tr>
                             @endforelse
                         </tbody>

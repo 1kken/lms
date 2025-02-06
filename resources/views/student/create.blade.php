@@ -15,6 +15,16 @@
                     <form class="yourform" action="{{ route('student.store') }}" method="post" autocomplete="off">
                         @csrf
                         <div class="form-group">
+                            <label>Student ID</label>
+                            <input id="student_id" type="text" class="form-control" placeholder="Scan Barcode" name="student_id"
+                                   value="{{ old('student_id') }}" required>
+                            @error('student_id')
+                            <div class="alert alert-danger" role="alert">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label>Student Name</label>
                             <input type="text" class="form-control" placeholder="Student Name" name="name"
                                 value="{{ old('name') }}" required>
@@ -92,4 +102,12 @@
             </div>
         </div>
     </div>
+    <script>
+        const studentIdInput = document.getElementById('student_id');
+        studentIdInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission or other default behavior
+            }
+        });
+    </script>
 @endsection

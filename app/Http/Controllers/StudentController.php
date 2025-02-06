@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\student;
 use App\Http\Requests\StorestudentRequest;
 use App\Http\Requests\UpdatestudentRequest;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+
 
 class StudentController extends Controller
 {
@@ -19,6 +24,34 @@ class StudentController extends Controller
             'students' => student::Paginate(5)
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @return Application|Factory|View
+     */
+    public function search(Request $request)
+    {
+        // Get the search term from the request
+        $search = $request->input('search');
+
+        // Initialize the query
+        $students = Student::query();
+
+        // Apply the search filter if a search term is provided
+        if (!empty($search)) {
+            $students->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%")
+                    ->orWhere('student_id', 'like', "%$search%");
+            });
+        }
+
+        // Paginate the results (5 items per page)
+        $students = $students->paginate(5);
+
+        // Return the view with the search results
+        return view('student.index', compact('students'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -68,6 +101,7 @@ class StudentController extends Controller
         ]);
     }
 
+
     /**
      * Update the specified resource in storage.
      *
@@ -77,6 +111,7 @@ class StudentController extends Controller
     public function update(UpdatestudentRequest $request, $id)
     {
         $student = student::find($id);
+        $student->student_id = $request->student_id;
         $student->name = $request->name;
         $student->address = $request->address;
         $student->gender = $request->gender;

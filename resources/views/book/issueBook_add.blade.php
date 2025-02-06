@@ -1,52 +1,81 @@
 @extends('layouts.app')
+
 @section('content')
     <div id="admin-content">
         <div class="container">
-            <div class="row">
+            <!-- Header Section -->
+            <div class="row align-items-center mb-4">
                 <div class="col-md-3">
                     <h2 class="admin-heading">Add Book Issue</h2>
                 </div>
-                <div class="offset-md-7 col-md-2">
-                    <a class="add-new" href="{{ route('book_issued') }}">All Issue List</a>
+                <div class="col-md-2 offset-md-7 text-md-right text-center">
+                    <a class="btn btn-success" href="{{ route('book_issued') }}">All Issue List</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="offset-md-3 col-md-6">
-                    <form class="yourform" action="{{ route('book_issue.create') }}" method="post"
-                        autocomplete="off">
-                        @csrf
-                        <div class="form-group">
-                            <label>Student Name</label>
-                            <select class="form-control" name="student_id" required>
-                                <option value="">Select Name</option>
-                                @foreach ($students as $student)
-                                    <option value='{{ $student->id }}'>{{ $student->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('student_id')
+
+            <!-- Form Section -->
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-lg p-4">
+                        <form class="yourform" action="{{ route('book_issue.store') }}" method="post" autocomplete="off">
+                            @csrf
+
+                            <!-- Student ID (Barcode) -->
+                            <div class="form-group">
+                                <label class="font-weight-bold">Student ID (Scan Barcode)</label>
+                                <input id="student_id" type="text" class="form-control" placeholder="Scan Barcode" name="student_id"
+                                       value="{{ old('student_id') }}" required autofocus>
+                                @error('student_id')
                                 <div class="alert alert-danger" role="alert">
                                     {{ $message }}
                                 </div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label>Book Name</label>
-                            <select class="form-control" name="book_id" required>
-                                <option value="">Select Name</option>
-                                @foreach ($books as $book)
-                                    <option value='{{ $book->id }}'>{{ $book->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('book_id')
+                                @enderror
+                            </div>
+
+                            <!-- Book RFID Input -->
+                            <div class="form-group">
+                                <label class="font-weight-bold">Book RFID (Scan RFID)</label>
+                                <input id="rfid" type="text" class="form-control" placeholder="Scan Book's RFID" name="rfid"
+                                       value="{{ old('rfid') }}" required>
+                                @error('rfid')
                                 <div class="alert alert-danger" role="alert">
                                     {{ $message }}
                                 </div>
-                            @enderror
-                        </div>
-                        <input type="submit" name="save" class="btn btn-danger" value="save">
-                    </form>
+                                @enderror
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <input type="submit" name="save" class="btn btn-danger px-4 py-2" value="Save">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const studentIdInput = document.getElementById("student_id");
+            const bookRfidInput = document.getElementById("rfid");
+
+            // Autofocus student ID when the page loads
+            studentIdInput.focus();
+
+            studentIdInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); // Prevent form submission
+                    bookRfidInput.focus(); // Move focus to RFID field
+                }
+            });
+
+            bookRfidInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); // Prevent accidental form submission
+                }
+            });
+        });
+    </script>
 @endsection
+

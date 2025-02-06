@@ -15,8 +15,12 @@ class CreateBookIssuesTable extends Migration
     {
         Schema::create('book_issues', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->foreignId('book_id')->constrained();
+            $table->string('student_id'); // Instead of foreignId
+            $table->foreign('student_id')->references('student_id')->on('students')->onDelete('cascade');
+
+            $table->string('rfid'); // Instead of book_id
+            $table->foreign('rfid')->references('rfid')->on('books')->onDelete('cascade');
+
             $table->timestamp('issue_date');
             $table->timestamp('return_date')->nullable();
             $table->string('issue_status')->nullable();

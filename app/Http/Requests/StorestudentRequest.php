@@ -24,6 +24,7 @@ class StorestudentRequest extends FormRequest
     public function rules()
     {
         return [
+            'student_id'=> "required",
             'name' => "required",
             'address' => "required",
             'gender' => "required",

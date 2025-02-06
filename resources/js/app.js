@@ -1,3 +1,8 @@
 require('./bootstrap');
+
 var Turbolinks = require("turbolinks")
-Turbolinks.start()
+require('axios')
+require('quagga').default;
+if (Turbolinks.supported) {
+    Turbolinks.start();
+}
