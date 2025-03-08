@@ -1,62 +1,45 @@
 @extends('layouts.app')
 @section('content')
-    <div id="admin-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <h2 class="admin-heading">Dashboard</h2>
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="admin-heading">Dashboard</h2>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            @php
+            $cards = [
+            ['icon' => 'fa-user', 'count' => $authors, 'label' => 'Authors Listed'],
+            ['icon' => 'fa-building', 'count' => $publishers, 'label' => 'Publishers Listed'],
+            ['icon' => 'fa-tags', 'count' => $categories, 'label' => 'Categories Listed'],
+            ['icon' => 'fa-book', 'count' => $books, 'label' => 'Books Listed'],
+            ['icon' => 'fa-users', 'count' => $students, 'label' => 'Registered Students'],
+            ['icon' => 'fa-book-open', 'count' => $issued_books, 'label' => 'Books Issued'],
+            ];
+            @endphp
+
+            @foreach ($cards as $card)
+            <div class="col-md-2 col-sm-4 col-6 mb-3">
+                <div class="card text-center py-2 border-0 shadow-none" style="color: white; min-width: 10rem; max-width: 12rem; height: 7rem; display: flex; align-items: center; justify-content: center;">
+                    <div class="card-body p-2">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fa {{ $card['icon'] }} fa-sm mr-2"></i>
+                            <h6 class="mb-0">{{ $card['label'] }}</h6>
+                        </div>
+                        <p class="card-text font-weight-bold mt-2">{{ $card['count'] }}</p>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-3 mb-4">
-                    <div class="card" style="width: 14rem; margin: 0 auto;">
-                        <div class="card-body text-center">
-                            <p class="card-text">{{ $authors }}</p>
-                            <h5 class="card-title mb-0">Authors Listed</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="width: 14rem; margin: 0 auto;">
-                        <div class="card-body text-center">
-                            <p class="card-text">{{ $publishers }}</p>
-                            <h5 class="card-title mb-0">Publishers Listed</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="width: 14rem; margin: 0 auto;">
-                        <div class="card-body text-center">
-                            <p class="card-text">{{ $categories }}</p>
-                            <h5 class="card-title mb-0">Categories Listed</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="width: 14rem; margin: 0 auto;">
-                        <div class="card-body text-center">
-                            <p class="card-text">{{ $books }}</p>
-                            <h5 class="card-title mb-0">Books Listed</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="width: 14rem; margin: 0 auto;">
-                        <div class="card-body text-center">
-                            <p class="card-text">{{ $students }}</p>
-                            <h5 class="card-title mb-0">Register Students</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="width: 14rem; margin: 0 auto;">
-                        <div class="card-body text-center">
-                            <p class="card-text">{{ $issued_books }}</p>
-                            <h5 class="card-title mb-0">Book Issued</h5>
-                        </div>
-                    </div>
-                </div>
+            @endforeach
+        </div>
+
+        <!-- Full-width Image Below the Row -->
+        <div class="row">
+            <div class="col-12">
+                <img src="{{ asset('images/defemnhs.jpg') }}" alt="Dashboard Image" class="img-fluid w-100 mt-3">
             </div>
         </div>
     </div>
+</div>
 @endsection
