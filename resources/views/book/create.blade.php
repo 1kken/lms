@@ -24,62 +24,62 @@
                                 </div>
                             @enderror
                         </div>
+                        <!-- Category input field -->
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control @error('category_id') isinvalid @enderror " name="category_id"
-                                required>
-                                <option value="">Select Category</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
+                            <input type="text" class="form-control @error('category') isinvalid @enderror"
+                                placeholder="Category" name="category" value="{{ old('category') }}" required>
+                            @error('category')
                                 <div class="alert alert-danger" role="alert">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
+                        <!-- Author input field -->
                         <div class="form-group">
                             <label>Author</label>
-                            <select class="form-control @error('auther_id') isinvalid @enderror " name="auther_id" required>
-                                <option value="">Select Author</option>
-                                @foreach ($authors as $author)
-                                    <option value='{{ $author->id }}'>{{ $author->name }}</option>";
-                                @endforeach
-                            </select>
-                            @error('auther_id')
+                            <input type="text" class="form-control @error('author') isinvalid @enderror"
+                                placeholder="Author" name="author" value="{{ old('author') }}" required>
+                            @error('author')
                                 <div class="alert alert-danger" role="alert">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
+                        <!-- Publisher input field -->
                         <div class="form-group">
                             <label>Publisher</label>
-                            <select class="form-control @error('publisher_id') isinvalid @enderror " name="publisher_id"
-                                required>
-                                <option value="">Select Publisher</option>
-                                @foreach ($publishers as $publisher)
-                                    <option value='{{ $publisher->id }}'>{{ $publisher->name }}</option>";
-                                @endforeach
-                            </select>
-                            @error('publisher_id')
+                            <input type="text" class="form-control @error('publisher') isinvalid @enderror"
+                                placeholder="Publisher" name="publisher" value="{{ old('publisher') }}" required>
+                            @error('publisher')
                                 <div class="alert alert-danger" role="alert">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
+                        <!-- RFID tag input field -->
                         <div class="form-group">
-                            <label>Scan Rfid tag</label>
+                            <label>Scan RFID Tag</label>
                             <input id="rfid" type="text" class="form-control @error('rfid') isinvalid @enderror"
-                                placeholder="Please use rfid scanner..." name="rfid" value="{{ old('rfid') }}"
-                                required>
+                                placeholder="Please use RFID scanner..." name="rfid" value="{{ old('rfid') }}" required>
                             @error('rfid')
                                 <div class="alert alert-danger" role="alert">
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
-                        <input type="submit" name="save" class="btn btn-danger" value="save" required>
+                        <!-- Copy input field -->
+                        <div class="form-group">
+                            <label>Copy</label>
+                            <input type="number" class="form-control @error('copy') isinvalid @enderror"
+                                placeholder="Copy count" name="copy" value="{{ old('copy') }}" required>
+                            @error('copy')
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <input type="submit" name="save" class="btn btn-danger" value="Save" required>
                     </form>
                 </div>
             </div>
@@ -88,10 +88,9 @@
 
     <script>
         const rfidInput = document.getElementById('rfid');
-        let rfidLength = 0;
         rfidInput.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent form submission or other default behavior
+                event.preventDefault();
             }
         });
     </script>

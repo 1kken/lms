@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\book;
 use App\Models\book_issue;
+use App\Models\BookIssue;
 use Illuminate\Http\Request;
 
 class ReportsController extends Controller
@@ -22,7 +23,7 @@ class ReportsController extends Controller
     {
         $request->validate(['date' => "required|date"]);
         return view('report.dateWise', [
-            'books' => book_issue::where('issue_date', $request->date)->latest()->get()
+            'books' => BookIssue::where('issue_date', $request->date)->latest()->get()
         ]);
     }
 
@@ -35,14 +36,14 @@ class ReportsController extends Controller
     {
         $request->validate(['month' => "required|date"]);
         return view('report.monthWise', [
-            'books' => book_issue::where('issue_date', 'LIKE', '%' . $request->month . '%')->latest()->get(),
+            'books' => BookIssue::where('issue_date', 'LIKE', '%' . $request->month . '%')->latest()->get(),
         ]);
     }
 
     public function not_returned()
     {
         return view('report.notReturned',[
-            'books' => book_issue::latest()->get()
+            'books' => BookIssue::latest()->get()
         ]);
     }
 }

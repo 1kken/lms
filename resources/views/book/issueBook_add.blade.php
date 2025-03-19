@@ -26,9 +26,9 @@
                                 <input id="student_id" type="text" class="form-control" placeholder="Scan Barcode" name="student_id"
                                        value="{{ old('student_id') }}" required autofocus>
                                 @error('student_id')
-                                <div class="alert alert-danger" role="alert">
-                                    {{ $message }}
-                                </div>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
 
@@ -38,9 +38,24 @@
                                 <input id="rfid" type="text" class="form-control" placeholder="Scan Book's RFID" name="rfid"
                                        value="{{ old('rfid') }}" required>
                                 @error('rfid')
-                                <div class="alert alert-danger" role="alert">
-                                    {{ $message }}
-                                </div>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <!-- Category Dropdown -->
+                            <div class="form-group">
+                                <label class="font-weight-bold">Category</label>
+                                <select name="category" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="assignment" {{ old('category') == 'assignment' ? 'selected' : '' }}>Assignment</option>
+                                    <option value="activity" {{ old('category') == 'activity' ? 'selected' : '' }}>Activity</option>
+                                </select>
+                                @error('category')
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $message }}
+                                    </div>
                                 @enderror
                             </div>
 
@@ -78,4 +93,3 @@
         });
     </script>
 @endsection
-

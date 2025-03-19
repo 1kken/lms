@@ -12,11 +12,11 @@
                         <div class="input-group">
                             <!-- Search Input -->
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                   placeholder="Search..." name="search" value="{{  request('search') }}">
+                                   placeholder="Search..." name="search" value="{{ request('search') }}">
                             <!-- Dropdown for Status -->
-                            <select name="status" class="form-control ml-2" >
+                            <select name="status" class="form-control ml-2">
                                 <option value="">All</option>
-                                <option value="Y" {{request('status') == 'Y' ? 'selected' : '' }}>Returned</option>
+                                <option value="Y" {{ request('status') == 'Y' ? 'selected' : '' }}>Returned</option>
                                 <option value="N" {{ request('status') == 'N' ? 'selected' : '' }}>Issued</option>
                             </select>
 
@@ -29,7 +29,7 @@
                         </div>
                     </form>
                 </div>
-                <div class=" col-md-3">
+                <div class="col-md-3">
                     <a class="add-new" href="{{ route('book_issue.create') }}">Add Book Issue</a>
                 </div>
             </div>
@@ -40,6 +40,7 @@
                             <th>BI.No</th>
                             <th>Student Name</th>
                             <th>Book Name</th>
+                            <th>Category</th>
                             <th>Phone</th>
                             <th>Email</th>
                             <th>Issue Date</th>
@@ -50,10 +51,11 @@
                         </thead>
                         <tbody>
                             @forelse ($books as $book)
-                                <tr style='@if (date('Y-m-d') > $book->return_date->format('d-m-Y') && $book->issue_status == 'N') ) background:rgba(255,0,0,0.2) @endif'>
+                                <tr style="@if (date('Y-m-d') > $book->return_date->format('d-m-Y') && $book->issue_status == 'N') background:rgba(255,0,0,0.2) @endif">
                                     <td>{{ $book->id }}</td>
                                     <td>{{ $book->student->name }}</td>
                                     <td>{{ $book->book->name }}</td>
+                                    <td>{{ $book->category }}</td>
                                     <td>{{ $book->student->phone }}</td>
                                     <td>{{ $book->student->email }}</td>
                                     <td>{{ $book->issue_date->format('d M, Y') }}</td>
@@ -70,15 +72,15 @@
                                     </td>
                                     <td class="delete">
                                         <form action="{{ route('book_issue.destroy', $book) }}" method="post"
-                                            class="form-hidden">
-                                            <button class="btn btn-danger">Delete</button>
+                                              class="form-hidden">
                                             @csrf
+                                            <button class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10">No Books Issued</td>
+                                    <td colspan="11">No Books Issued</td>
                                 </tr>
                             @endforelse
                         </tbody>

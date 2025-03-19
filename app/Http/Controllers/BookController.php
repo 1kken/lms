@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\book;
-use App\Http\Requests\StorebookRequest;
-use App\Http\Requests\UpdatebookRequest;
-use App\Models\auther;
-use App\Models\category;
-use App\Models\publisher;
+use App\Models\Book;
+use App\Http\Requests\StoreBookRequest;
+use App\Http\Requests\UpdateBookRequest;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -19,57 +16,42 @@ class BookController extends Controller
      */
     public function index()
     {
-
         return view('book.index', [
-            'books' => book::Paginate(5)
+            'books' => Book::paginate(5)
         ]);
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource with search and filter.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function search(Request $request)
     {
-        // Get the search term and status filter from the request
         $search = $request->input('search');
         $status = $request->input('status');
 
-        // Initialize the query
         $books = Book::query();
 
-        // Apply the search filter if search term is provided
         if (!empty($search)) {
             $books->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%$search%")
-                    ->orWhere('rfid', 'like', "%$search%");
-            })
-                ->orWhereHas('category', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                })
-                ->orWhereHas('auther', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                })
-                ->orWhereHas('publisher', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                });
+                      ->orWhere('rfid', 'like', "%$search%")
+                      ->orWhere('author', 'like', "%$search%")
+                      ->orWhere('category', 'like', "%$search%")
+                      ->orWhere('publisher', 'like', "%$search%");
+            });
         }
 
-        // Apply the status filter if provided
         if (!empty($status)) {
             $books->where('status', $status);
         }
 
-        // Paginate the results (10 items per page)
         $books = $books->paginate(10);
 
-        // Return the view with the search results
         return view('book.index', compact('books'));
     }
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -78,81 +60,68 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('book.create', [
-            'authors' => auther::latest()->get(),
-            'publishers' => publisher::latest()->get(),
-            'categories' => category::latest()->get(),
-        ]);
+        // No longer fetching authors, publishers, or categories from separate tables.
+        return view('book.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorebookRequest  $request
+     * @param  \App\Http\Requests\StoreBookRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorebookRequest $request)
+    public function store(StoreBookRequest $request)
     {
-        book::create($request->validated() + [
-            'status' => 'Y'
-        ]);
+        // The validated data should now include author, publisher, category, and copy.
+        $data = $request->validated();
+        $data['status'] = 'Y'; // Set default status
+
+        Book::create($data);
+
         return redirect()->route('books');
     }
-
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\book  $book
+     * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function edit(book $book)
+    public function edit(Book $book)
     {
+        // No need to pass authors, publishers, or categories as they're now part of the book record.
         return view('book.edit', [
-            'authors' => auther::latest()->get(),
-            'publishers' => publisher::latest()->get(),
-            'categories' => category::latest()->get(),
             'book' => $book
         ]);
     }
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatebookRequest  $request
+     * @param  \App\Http\Requests\UpdateBookRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatebookRequest $request, $id)
+    public function update(UpdateBookRequest $request, $id)
     {
-        // Validate the request
         $validated = $request->validated();
 
-        // Find the book by ID
-        $book = book::findOrFail($id);
+        // The validated data should include keys for name, rfid, author, category, publisher, and copy.
+        $book = Book::findOrFail($id);
+        $book->update($validated);
 
-        // Update the book using validated data
-        $book->update([
-            'name' => $validated['name'],
-            'rfid' => $validated['rfid'],
-            'auther_id' => $validated['author_id'],
-            'category_id' => $validated['category_id'],
-            'publisher_id' => $validated['publisher_id'],
-        ]);
-
-        // Redirect to the books route
         return redirect()->route('books');
     }
-
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\book  $book
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        book::find($id)->delete();
+        Book::findOrFail($id)->delete();
         return redirect()->route('books');
     }
 }

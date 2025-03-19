@@ -20,7 +20,7 @@
         .sidebar {
             width: 250px;
             height: 100vh;
-            background: #074799;
+            background: #2A3F54;
             /* Red background */
             color: white;
             padding: 20px;
@@ -57,7 +57,7 @@
         }
 
         .sidebar .menu li a:hover {
-            background: #001A6E;
+            background: rgb(36, 87, 255);
             /* Darker red */
         }
 
@@ -73,6 +73,8 @@
             height: 100vh;
             overflow-y: auto;
             transition: margin-left 0.3s ease;
+            /* Add bottom padding so content isn't hidden behind the fixed footer */
+            padding-bottom: 60px;
         }
 
         .content.full-width {
@@ -91,7 +93,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #074799;
+            background: rgb(155, 155, 155);
             color: white;
             padding: 0 20px;
             font-size: 16px;
@@ -130,6 +132,28 @@
             height: calc(100vh - 50px);
             overflow-y: auto;
         }
+
+        /* Footer Styles */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 250px;
+            width: calc(100% - 250px);
+            background: #ffffff !important;
+            /* White background */
+            color: #2A3F54 !important;
+            /* Blue font color */
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 14px;
+            transition: left 0.3s ease, width 0.3s ease;
+        }
+
+
+        .footer.full-width {
+            left: 0;
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -143,7 +167,6 @@
             </a>
         </div>
 
-
         <div class="user-menu d-flex align-items-center text-white mt-3"> <!-- Added mt-3 for spacing -->
             <i class="fas fa-user-circle fa-2x mr-2"></i> <!-- Increased icon size -->
             <div class="d-flex flex-column">
@@ -152,17 +175,16 @@
             </div>
         </div>
 
-
         <ul class="menu mt-4">
             <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a href="{{ route('authors') }}"><i class="fas fa-user-edit"></i> Authors</a></li>
+            <!-- <li><a href="{{ route('authors') }}"><i class="fas fa-user-edit"></i> Authors</a></li>
             <li><a href="{{ route('publishers') }}"><i class="fas fa-building"></i> Publishers</a></li>
-            <li><a href="{{ route('categories') }}"><i class="fas fa-tags"></i> Categories</a></li>
+            <li><a href="{{ route('categories') }}"><i class="fas fa-tags"></i> Categories</a></li> -->
             <li><a href="{{ route('books') }}"><i class="fas fa-book"></i> Books</a></li>
-            <li><a href="{{ route('students') }}"><i class="fas fa-user-graduate"></i> Reg Students</a></li>
+            <li><a href="{{ route('students') }}"><i class="fas fa-user-graduate"></i>Students</a></li>
             <li><a href="{{ route('book_issued') }}"><i class="fas fa-book-reader"></i> Book Issue</a></li>
             <li><a href="{{ route('reports') }}"><i class="fas fa-chart-bar"></i> Reports</a></li>
-            <li><a href="{{ route('settings') }}"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="{{ route('settings.index') }}"><i class="fas fa-cog"></i> Settings</a></li>
         </ul>
     </div>
 
@@ -172,6 +194,9 @@
             <i class="fas fa-bars"></i>
         </div>
 
+        <div class="center-title" style="flex:1; text-align:center; font-size:18px; font-weight:bold; color: #2A3F54;">
+            LIBRARY INFORMATION SYSTEM
+        </div>
 
         <div class="user-menu">
             <div class="dropdown">
@@ -196,19 +221,62 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+        &copy; 2025 LIBRARY INFORMATION SYSTEM. All rights reserved.
+    </footer>
+
     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
+        function initializeChart() {
+            // Ensure that your PHP variables for chart data are accessible.
+            // You might need to pass them as data attributes or JSON script elements if using Turbolinks.
+            const chartLabels = @json($chartLabels ?? []);
+            const chartData = @json($chartData ?? []);
+            const ctx = document.getElementById('bookIssueChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Book Issues (Past 5 Days)',
+                        data: chartData,
+                        fill: false,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+        }
+
+        // Listen for the turbolinks load event to initialize the chart when the page is loaded
+        document.addEventListener("turbolinks:load", function() {
+            if (document.getElementById('bookIssueChart')) {
+                initializeChart();
+            }
+        });
+
         document.getElementById('toggleSidebar').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             const content = document.getElementById('content');
             const topMenu = document.getElementById('topMenu');
+            const footer = document.getElementById('footer');
 
             sidebar.classList.toggle('hidden');
             content.classList.toggle('full-width');
             topMenu.classList.toggle('full-width');
+            footer.classList.toggle('full-width');
         });
     </script>
 </body>

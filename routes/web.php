@@ -8,7 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -33,8 +33,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('change-password',[dashboardController::class,'change_password_view'])->name('change_password_view');
-    Route::post('change-password',[dashboardController::class,'change_password'])->name('change_password');
+    Route::get('change-password', [dashboardController::class, 'change_password_view'])->name('change_password_view');
+    Route::post('change-password', [dashboardController::class, 'change_password'])->name('change_password');
     Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard');
 
     // author CRUD
@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     // books CRUD
     Route::get('/books', [BookController::class, 'index'])->name('books');
     Route::get('/book/create', [BookController::class, 'create'])->name('book.create');
-    Route::get('book/search',[BookController::class,'search'])->name('book.search');
+    Route::get('book/search', [BookController::class, 'search'])->name('book.search');
     Route::get('/book/edit/{book}', [BookController::class, 'edit'])->name('book.edit');
     Route::post('/book/update/{id}', [BookController::class, 'update'])->name('book.update');
     Route::post('/book/delete/{id}', [BookController::class, 'destroy'])->name('book.destroy');
@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
     // students CRUD
     Route::get('/students', [StudentController::class, 'index'])->name('students');
     Route::get('/student/create', [StudentController::class, 'create'])->name('student.create');
-    Route::get('/student/search',[StudentController::class,'search'])->name('student.search');
+    Route::get('/student/search', [StudentController::class, 'search'])->name('student.search');
     Route::get('/student/edit/{student}', [StudentController::class, 'edit'])->name('student.edit');
     Route::post('/student/update/{id}', [StudentController::class, 'update'])->name('student.update');
     Route::post('/student/delete/{id}', [StudentController::class, 'destroy'])->name('student.destroy');
@@ -100,6 +100,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/monthly-Wise', [ReportsController::class, 'generate_month_wise_report'])->name('reports.month_wise_generate');
     Route::get('/reports/not-returned', [ReportsController::class, 'not_returned'])->name('reports.not_returned');
 
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
-    Route::post('/settings', [SettingsController::class, 'update'])->name('settings');
+    // Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    // Route::post('/settings', [SettingsController::class, 'update'])->name('settings');
+
+    Route::resource('settings', UserController::class);
+
+
+
 });

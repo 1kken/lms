@@ -57,9 +57,9 @@
                                     <td class="id">{{ $book->id }}</td>
                                     <td>{{ $book->rfid }}</td>
                                     <td>{{ $book->name }}</td>
-                                    <td>{{ $book->category->name }}</td>
-                                    <td>{{ $book->auther->name }}</td>
-                                    <td>{{ $book->publisher->name }}</td>
+                                    <td>{{ $book->category }}</td>
+                                    <td>{{ $book->author }}</td>
+                                    <td>{{ $book->publisher}}</td>
                                     <td>
                                         @if ($book->status == 'Y')
                                             <span class='badge badge-success'>Available</span>

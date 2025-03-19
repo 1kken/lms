@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class bookFactory extends Factory
+class BookFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -24,13 +24,19 @@ class bookFactory extends Factory
 
         static $index = 0;
 
+        // Predefined values for category, author, and publisher
+        $categories = ['Fiction', 'Non-fiction', 'Science Fiction', 'Mystery', 'Romance'];
+        $authors = ['J.K. Rowling', 'Stephen King', 'Agatha Christie', 'George Orwell', 'Jane Austen'];
+        $publishers = ['Penguin', 'HarperCollins', 'Simon & Schuster', 'Hachette', 'Macmillan'];
+
         return [
-            'rfid' => $rfids[$index++ % count($rfids)], // Cycle through the predefined RFID values
-            'name' => $this->faker->sentence(4),
-            'category_id' => random_int(1, 10),
-            'auther_id' => random_int(1, 10),
-            'publisher_id' => random_int(1, 10),
-            'status' => 'Y',
+            'rfid'      => $rfids[$index++ % count($rfids)], // Cycle through the predefined RFID values
+            'name'      => $this->faker->sentence(4),
+            'category'  => $this->faker->randomElement($categories),
+            'author'    => $this->faker->randomElement($authors),
+            'publisher' => $this->faker->randomElement($publishers),
+            'copy'      => $this->faker->numberBetween(1, 10),
+            'status'    => 'Y',
         ];
     }
 }

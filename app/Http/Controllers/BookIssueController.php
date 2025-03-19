@@ -5,45 +5,56 @@ namespace App\Http\Controllers;
 use App\Models\BookIssue;
 use App\Http\Requests\Storebook_issueRequest;
 use App\Http\Requests\Updatebook_issueRequest;
-use App\Models\book;
-use App\Models\settings;
+use App\Models\Book;
+use App\Models\Settings;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class BookIssueController extends Controller
 {
     /**
+     * Display a listing of the book issues.
+     *
      * @return Application|Factory|View
      */
     public function index()
     {
         return view('book.issueBooks', [
-            'books' => BookIssue::Paginate(5)
+            'books' => BookIssue::paginate(5)
         ]);
     }
 
+    /**
+     * Search book issues.
+     *
+     * @param Request $request
+     * @return Application|Factory|View
+     */
     public function search(Request $request)
     {
-        // Get search term from request
+        // Get search term and status from request
         $search = $request->input('search');
         $status = $request->input('status');
 
         // Initialize query
         $bookIssues = BookIssue::query();
 
-        // Apply search filter
+        // Apply search filter if search term is provided
         if (!empty($search)) {
-            $bookIssues->whereHas('student', function ($query) use ($search) {
-                $query->where('name', 'like', "%$search%")
-                    ->orWhere('student_id', 'like', "%$search%");
-            })
-                ->orWhereHas('book', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%")
-                        ->orWhere('rfid', 'like', "%$search%");
-                });
+            $bookIssues->where(function ($query) use ($search) {
+                $query->whereHas('student', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                      ->orWhere('student_id', 'like', "%$search%");
+                })
+                ->orWhereHas('book', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                      ->orWhere('rfid', 'like', "%$search%");
+                })
+                ->orWhere('category', 'like', "%$search%");
+            });
         }
 
         // Apply status filter if provided
@@ -55,10 +66,12 @@ class BookIssueController extends Controller
         $bookIssues = $bookIssues->paginate(10);
 
         // Return view with results
-        return view('book.issueBooks', ['books'=>$bookIssues]);
+        return view('book.issueBooks', ['books' => $bookIssues]);
     }
 
     /**
+     * Show the form for creating a new book issue.
+     *
      * @return Application|Factory|View
      */
     public function create()
@@ -67,6 +80,8 @@ class BookIssueController extends Controller
     }
 
     /**
+     * Store a newly created book issue in storage.
+     *
      * @param Storebook_issueRequest $request
      * @return RedirectResponse
      */
@@ -75,12 +90,13 @@ class BookIssueController extends Controller
         $issue_date = date('Y-m-d');
         $return_date = date('Y-m-d', strtotime("+" . (Settings::latest()->first()->return_days) . " days"));
 
-        // Create the book issue record
+        // Create the book issue record, including the new 'category' column
         $data = BookIssue::create($request->validated() + [
-                'student_id' => $request->student_id,
-                'rfid' => $request->rfid,
-                'issue_date' => $issue_date,
-                'return_date' => $return_date,
+                'student_id'   => $request->student_id,
+                'category'     => $request->category, // new category column
+                'rfid'         => $request->rfid,
+                'issue_date'   => $issue_date,
+                'return_date'  => $return_date,
                 'issue_status' => 'N',
             ]);
 
@@ -99,17 +115,20 @@ class BookIssueController extends Controller
     }
 
     /**
+     * Show the form for editing a book issue.
+     *
      * @param $id
      * @return Application|Factory|View
      */
     public function edit($id)
     {
-        // calculate the total fine  (total days * fine per day)
-        $book = BookIssue::where('id',$id)->get()->first();
+        // Calculate the total fine (total days * fine per day)
+        $book = BookIssue::findOrFail($id);
         $first_date = date_create(date('Y-m-d'));
         $last_date = date_create($book->return_date);
         $diff = date_diff($first_date, $last_date);
-        $fine = (settings::latest()->first()->fine * $diff->format('%a'));
+        $fine = (Settings::latest()->first()->fine * $diff->format('%a'));
+
         return view('book.issueBook_edit', [
             'book' => $book,
             'fine' => $fine,
@@ -117,6 +136,8 @@ class BookIssueController extends Controller
     }
 
     /**
+     * Update a book issue, marking it as returned.
+     *
      * @param Request $request
      * @param $id
      * @return RedirectResponse
@@ -130,13 +151,13 @@ class BookIssueController extends Controller
             return back()->withErrors(['error' => 'Book issue record not found.']);
         }
 
-        // Update book issue status
+        // Update book issue status to returned
         $bookIssue->issue_status = 'Y';
         $bookIssue->return_day = now();
         $bookIssue->save();
 
         // Find the actual book using RFID
-        $book = book::where('rfid', $bookIssue->rfid)->first();
+        $book = Book::where('rfid', $bookIssue->rfid)->first();
 
         if (!$book) {
             return back()->withErrors(['error' => 'Book not found.']);
@@ -150,6 +171,8 @@ class BookIssueController extends Controller
     }
 
     /**
+     * Remove a book issue from storage.
+     *
      * @param $id
      * @return RedirectResponse
      */
@@ -158,5 +181,4 @@ class BookIssueController extends Controller
         BookIssue::find($id)->delete();
         return redirect()->route('book_issued');
     }
-
 }

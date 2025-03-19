@@ -17,10 +17,11 @@ class CreateBooksTable extends Migration
             $table->id();
             $table->string('rfid')->unique();
             $table->string('name');
-            $table->foreignId('category_id')->constrained();
-            $table->foreignId('auther_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('publisher_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('category');
+            $table->string('author');
+            $table->string('publisher');
             $table->string('status')->default('Y');
+            $table->integer('copy');
             $table->timestamps();
         });
     }
